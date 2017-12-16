@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <div class="reading">
+    Mouse Down: <span class="mousedown"></span>
+    <br/>
+    Mouse Move: <span class="mousemove"></span>
+    <br/>
+    Mouse Up: <span class="mouseup"></span>
+  </div>
+  <div class="hotspot">
+
+    <!-- <div class="cropper">
+    </div> -->
+    <div class="cropper" style="
+        display:  none;
+        background-color: #80808054;
+        position:  absolute;
+    ">
+    <div class="start-angle" style="
+        position:  absolute;
+        top:  0;
+        left:  0;
+    "></div>
+    <div class="end-angle" style="
+        position:  absolute;
+        bottom: 0;
+        right: 0;
+    "></div>
+    </div>
+</div>
+  </div>
+  <!-- <div class="start-angle"></div> -->
+  <script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+  <script>
+    // $('body').click((e) => {
+    //   console.log(e.pageX, e.pageY)
+    // })
+    var beginning_top;
+    var beginning_left;
+    var height;
+    var width;
+    var dropped = false
+    $('body').on('mousedown', (e) => {
+      dropped = false;
+      $('.cropper').css({ display: "inline-block" })
+      console.log(e.pageX, e.pageY, 'down')
+      // $('.cropper').css({ display: "none"})
+      $('.cropper').css({ top: `${e.pageY}px`, left: `${e.pageX}px`, height: "0", width: "0" })
+      height = 0;
+      width = 0;
+      beginning_top = e.pageY;
+      beginning_left = e.pageX;
+      // $('.hotspot').html("")
+      // $('.hotspot').append("<div class='cropper'></div>")
+      // $('.cropper').append(`<div class='start-angle' style="position:absolute; top:${e.pageY}px; left:${e.pageX}px;"/>`)
+      $('.mousedown').html(`X: ${e.pageX}, Y: ${e.pageY}`)
+    })
+    $('body').on('touchstart', (e) => {
+      dropped = false;
+      $('.cropper').css({ display: "inline-block" })
+      console.log(e.touches[0].pageX, e.touches[0].pageY, 'down')
+      // $('.cropper').css({ display: "none"})
+      $('.cropper').css({ top: `${e.touches[0].pageY}px`, left: `${e.touches[0].pageX}px`, height: "0", width: "0" })
+      height = 0;
+      width = 0;
+      beginning_top = e.touches[0].pageY;
+      beginning_left = e.touches[0].pageX;
+      // $('.hotspot').html("")
+      // $('.hotspot').append("<div class='cropper'></div>")
+      // $('.cropper').append(`<div class='start-angle' style="position:absolute; top:${e.pageY}px; left:${e.pageX}px;"/>`)
+      $('.mousedown').html(`X: ${e.touches[0].pageX}, Y: ${e.touches[0].pageY}`)
+    })
+
+    $('body').on('mousemove', (e) => {
+      if (!dropped) {
+        console.log(e.pageX, e.pageY, 'move mouse')
+        $('.cropper').css({ height: `${e.pageY - beginning_top}px`, width: `${e.pageX - beginning_left}px` })
+        height = e.pageY - beginning_top;
+        width = e.pageX - beginning_left;
+        $('.mousemove').html(`X: ${e.pageX}, Y: ${e.pageY}`)
+      }
+    })
+
+    $('body').on('touchmove', (e) => {
+      for (var i = 0; i < e.touches.length; i++) {
+        if (!dropped) {
+
+          console.log(e.touches[i].pageX, e.touches[i].pageY, 'move mouse')
+          $('.cropper').css({ height: `${e.touches[i].pageY - beginning_top}px`, width: `${e.touches[i].pageX - beginning_left}px` })
+          height = e.touches[i].pageY - beginning_top;
+          width = e.touches[i].pageX - beginning_left;
+          $('.mousemove').html(`X: ${e.touches[i].pageX}, Y: ${e.touches[i].pageY}`)
+        }
+      }
+    })
+    // $('body').on('touchmove', (e) => {
+    //   if (!dropped) {
+    //     console.log(e.pageX, e.pageY, 'move touch')
+    //     $('.cropper').css({ height: `${e.pageY - beginning_top}px`, width: `${e.pageX - beginning_left}px` })
+    //     height = e.pageY - beginning_top;
+    //     width = e.pageX - beginning_left;
+    //     $('.mousemove').html(`X: ${e.pageX}, Y: ${e.pageY}`)
+    //   }
+    // })
+    $('body').on('mouseup', (e) => {
+      console.log(e.pageX, e.pageY, 'up')
+      // $('.cropper').append(`<div class='end-angle' style="position:absolute; top:${e.pageY}px; left:${e.pageX}px;"/>`)
+      if (height < 10) {
+        height = 50
+      }
+      if (width < 10) {
+        width = 50
+      }
+      $('.cropper').css({ height: `${Math.abs(height)}px`, width: `${Math.abs(width)}px` })
+      // $('.cropper').css({ display: "inline-block" })
+      dropped = true;
+      $('.mouseup').html(`X: ${e.pageX}, Y: ${e.pageY}`)
+    })
+
+    $('body').on('touchend', (e) => {
+      // console.log(e, '///')
+      // console.log(e.touches[0].pageX, e.touches[0].pageY, 'up')
+      // $('.cropper').append(`<div class='end-angle' style="position:absolute; top:${e.pageY}px; left:${e.pageX}px;"/>`)
+      if (height < 10) {
+        height = 50
+      }
+      if (width < 10) {
+        width = 50
+      }
+      $('.cropper').css({ height: `${Math.abs(height)}px`, width: `${Math.abs(width)}px` })
+      // $('.cropper').css({ display: "inline-block" })
+      dropped = true;
+      // $('.mouseup').html(`X: ${e.touches[0].pageX}, Y: ${e.touches[0].pageY}`)
+    })
+  </script>
+  <style>
+    body, html, .hotspot {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+    }
+    .start-angle {
+      width: 10px;
+      height: 10px;
+      display: inline-block;
+      background-color: #0072ff;
+    }
+    .end-angle {
+      width: 10px;
+      height: 10px;
+      display: inline-block;
+      background-color: #ff0000;
+    }
+  </style>
+</body>
+</html>
